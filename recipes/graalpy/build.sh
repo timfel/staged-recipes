@@ -19,6 +19,8 @@ ln -s $CXX $MX_DIR/g++
 export CFLAGS="$CFLAGS --sysroot $CONDA_BUILD_SYSROOT"
 export CXXFLAGS="$CXXFLAGS --sysroot $CONDA_BUILD_SYSROOT"
 export LDFLAGS="$LDFLAGS --sysroot $CONDA_BUILD_SYSROOT"
+export CPATH="$BUILD_PREFIX/include"
+export LIBRARY_PATH="$BUILD_PREFIX/lib"
 for filename in $CONDA_BUILD_SYSROOT/../lib/libgcc_s.so*; do
     ln -s $filename $CONDA_BUILD_SYSROOT/lib/
 done
