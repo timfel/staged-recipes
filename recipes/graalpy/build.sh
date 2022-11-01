@@ -31,6 +31,7 @@ export JAVA_HOME=`echo $SRC_DIR/labsjdk-ce-17*`
 
 # run the build
 mx graalvm-show
+export CFLAGS="$CFLAGS --sysroot $CONDA_BUILD_SYSROOT"
 mx build
 
 # move the standalone build artifact into $PREFIX
