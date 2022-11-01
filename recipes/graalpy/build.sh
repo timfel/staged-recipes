@@ -6,9 +6,27 @@ set -exo pipefail
 export MX_DIR=$SRC_DIR/mx
 export PATH=$PATH:$MX_DIR
 export MX_PRIMARY_SUITE_PATH=$SRC_DIR/graal/vm
+
+# mx ninja build templates hardcode ar, gcc, g++; symlink these to the conda
+# compilers
 ln -s $AR $MX_DIR/ar
 ln -s $CC $MX_DIR/gcc
 ln -s $CXX $MX_DIR/g++
+
+# sulong toolchain wrappers are not recognized and cmake is making trouble
+# getting them to compile anything. Make sure to use the sysroot flag, and
+# symlink build environment objects
+export CFLAGS="$CFLAGS --sysroot $CONDA_BUILD_SYSROOT"
+export CXXFLAGS="$CXXFLAGS --sysroot $CONDA_BUILD_SYSROOT"
+export LDFLAGS="$LDFLAGS --sysroot $CONDA_BUILD_SYSROOT"
+for filename in $CONDA_BUILD_SYSROOT/../lib/libgcc_s.so*; do
+    ln -s $filename $CONDA_BUILD_SYSROOT/lib/
+done
+ln -s $CONDA_BUILD_SYSROOT/../../lib/gcc/x86_64-conda-linux-gnu/*/crtbegin.o $CONDA_BUILD_SYSROOT/lib/
+ln -s $CONDA_BUILD_SYSROOT/../../lib/gcc/x86_64-conda-linux-gnu/*/crtbeginS.o $CONDA_BUILD_SYSROOT/lib/
+ln -s $CONDA_BUILD_SYSROOT/../../lib/gcc/x86_64-conda-linux-gnu/*/crtend.o $CONDA_BUILD_SYSROOT/lib/
+ln -s $CONDA_BUILD_SYSROOT/../../lib/gcc/x86_64-conda-linux-gnu/*/crtendS.o $CONDA_BUILD_SYSROOT/lib/
+ln -s $CONDA_BUILD_SYSROOT/../../lib/gcc/x86_64-conda-linux-gnu/*/libgcc.a $CONDA_BUILD_SYSROOT/lib/
 
 # git init an empty repo inside graal, to force mx to pick graal download as
 # siblings dir
@@ -31,7 +49,6 @@ export JAVA_HOME=`echo $SRC_DIR/labsjdk-ce-17*`
 
 # run the build
 mx graalvm-show
-export CFLAGS="$CFLAGS --sysroot $CONDA_BUILD_SYSROOT"
 mx build
 
 # move the standalone build artifact into $PREFIX

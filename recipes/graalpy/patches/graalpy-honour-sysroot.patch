@@ -1,0 +1,63 @@
+diff --git a/graalpython/com.oracle.graal.python.cext/lzma/Makefile b/graalpython/com.oracle.graal.python.cext/lzma/Makefile
+index e0ddc86c76..1c3f230d83 100644
+--- a/graalpython/com.oracle.graal.python.cext/lzma/Makefile
++++ b/graalpython/com.oracle.graal.python.cext/lzma/Makefile
+@@ -57,7 +57,7 @@ INCLUDES=-I$(CONFIG_H_DIR) \
+ 			-I$(XZ_ROOT)/src/liblzma/simple \
+ 			-I$(XZ_ROOT)/src/common
+ 
+-CFLAGS=-fPIC -DPIC -g -O2
++CFLAGS:=$(CFLAGS) -fPIC -DPIC -g -O2
+ 
+ ifeq ($(shell uname -s), Darwin)
+ LIB_NAME=liblzma.5.dylib
+diff --git a/graalpython/com.oracle.graal.python.cext/setup.py b/graalpython/com.oracle.graal.python.cext/setup.py
+index d29d53b914..3d876f241c 100644
+--- a/graalpython/com.oracle.graal.python.cext/setup.py
++++ b/graalpython/com.oracle.graal.python.cext/setup.py
+@@ -262,14 +262,19 @@ class Bzip2Depedency(CAPIDependency):
+         logger.info("Building dependency %s in %s using Makefile %s" % (self.package_name, lib_src_folder, self.makefile))
+ 
+         # On Darwin, we need to use -install_name for the native linker
++        makefile_path = os.path.join(lib_src_folder, self.makefile)
+         if darwin_native:
+-            makefile_path = os.path.join(lib_src_folder, self.makefile)
+             with open(makefile_path, "r") as f:
+                 content = f.read()
+                 content = content.replace("-Wl,-soname -Wl,%s" % self.install_name, "-Wl,-install_name -Wl,@rpath/%s" % self.install_name)
+             with open(makefile_path, "w") as f:
+                 f.write(content)
+ 
++        with open(makefile_path, "r") as f:
++            content = f.read()
++        with open(makefile_path, "w") as f:
++            f.write(content.replace("CFLAGS=", "CFLAGS:=${CFLAGS} ").replace("$(CC) -shared", "$(CC) -shared"))
++
+         parallel_arg =  "-j" + str(min(4, os.cpu_count())) if threaded else ""
+         system("make -C '%s' %s -f '%s' CC='%s'" % (lib_src_folder, parallel_arg, self.makefile, get_config_var("CC")), msg="Could not build libbz2")
+         return lib_src_folder
+diff --git a/mx.graalpython/mx_graalpython.py b/mx.graalpython/mx_graalpython.py
+index 17f98fea66..03b31dc64a 100644
+--- a/mx.graalpython/mx_graalpython.py
++++ b/mx.graalpython/mx_graalpython.py
+@@ -2086,9 +2086,18 @@ class GraalpythonCAPIBuildTask(GraalpythonBuildTask):
+         env.update(mx.dependency("com.oracle.graal.python.cext").getBuildEnv())
+         env.update(self.subject.getBuildEnv())
+ 
+-        # distutils will honor env variables CC, CFLAGS, LDFLAGS but we won't allow to change them
++        # distutils will honor env variables CC, CFLAGS, LDFLAGS but we won't allow to change them,
++        # besides keeping custom sysroot, since our toolchain forwards to the system headers
+         for var in ["CC", "CFLAGS", "LDFLAGS"]:
+-            env.pop(var, None)
++            value = env.pop(var, None)
++            if value and "--sysroot" in value:
++                seen_sysroot = False
++                for element in shlex.split(value):
++                    if element == "--sysroot":
++                        seen_sysroot = True
++                    elif seen_sysroot:
++                        env[var] = f"--sysroot {element}"
++                        break
+         return super().run(args, env=env, cwd=cwd, **kwargs)
+ 
+     def _dev_headers_dir(self):

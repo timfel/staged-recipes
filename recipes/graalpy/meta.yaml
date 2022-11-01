@@ -16,9 +16,13 @@ source:
   - url: https://github.com/oracle/graal/archive/refs/tags/vm-ce-{{ version }}.zip
     sha256: 9b714747fbff0b9f477a102a22e6558f697322d8fa89b1ac9956938d3afb3b87
     folder: graal
+    patches:
+      - patches/sulong-disable-tests.patch
   - url: https://github.com/oracle/graalpython/archive/refs/tags/vm-ce-{{ version }}.zip
     sha256: 72ad9a6e8d8283425768c2838d9f360a42eb1dc6096d0efe44464f4fd5c0982c
     folder: graalpython
+    patches:
+      - patches/graalpy-honour-sysroot.patch
 
 build:
   number: 0
@@ -28,6 +32,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - gcc  # [linux]
     - python >=3.8
     - make
     - patch
@@ -39,6 +44,8 @@ requirements:
     - zlib
   run:
     - zlib
+    - patch
+    - curl
   run_constrained:
     - python {{ name_suffix }}.* *_{{ "".join(version.split(".")[:2]) }}_graalpy
 
