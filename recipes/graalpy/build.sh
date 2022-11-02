@@ -2,6 +2,9 @@
 
 set -exo pipefail
 
+# this needs to be updated when the target python version of graalpy changes
+PY_VERSION=3.8
+
 # set up paths for mx build
 export MX_DIR=$SRC_DIR/mx
 export PATH=$PATH:$MX_DIR
@@ -58,7 +61,6 @@ STANDALONE=`$MX_DIR/mx standalone-home python`
 cp -r $STANDALONE/* $PREFIX
 
 # create the site-packages folder to match cpython
-PY_VERSION=$(echo $PKG_NAME | cut -c 8-)
 mkdir -p $PREFIX/lib/python${PY_VERSION}/site-packages
 
 # match cpython include folder structure

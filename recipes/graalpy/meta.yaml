@@ -32,7 +32,6 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - gcc  # [linux]
     - python >=3.8
     - make
     - patch

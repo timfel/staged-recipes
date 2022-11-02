@@ -31,7 +31,7 @@ index d29d53b914..3d876f241c 100644
 +        with open(makefile_path, "r") as f:
 +            content = f.read()
 +        with open(makefile_path, "w") as f:
-+            f.write(content.replace("CFLAGS=", "CFLAGS:=${CFLAGS} ").replace("$(CC) -shared", "$(CC) -shared"))
++            f.write(content.replace("CFLAGS=", "CFLAGS:=${CFLAGS} ").replace("$(CC) -shared", "$(CC) -shared $(LDFLAGS)"))
 +
          parallel_arg =  "-j" + str(min(4, os.cpu_count())) if threaded else ""
          system("make -C '%s' %s -f '%s' CC='%s'" % (lib_src_folder, parallel_arg, self.makefile, get_config_var("CC")), msg="Could not build libbz2")
