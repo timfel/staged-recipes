@@ -54,9 +54,12 @@ requirements:
 
 test:
   commands:
-    - graalpy --help
-    - graalpy -c "import platform; print(platform._sys_version())"
+    - python3 --help
+    - python3 -c "import platform; print(platform._sys_version())"
     - graalpy -m venv --help
+    - graalpy -m venv testvenv
+    - testvenv/bin/pip install ujson==5.4.0
+    - testvenv/bin/graalpy -c "import ujson; assert ujson.dumps([{81: True}]) == '[{\"81\":true}]'"
 
 about:
     home: http://graalvm.org/python
