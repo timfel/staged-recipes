@@ -42,10 +42,11 @@ requirements:
     - git
     - curl
     - cmake
+    - patchelf
   host:
     - zlib
   run:
-    - zlib
+    - libzlib
     - patch
     - curl
   run_constrained:

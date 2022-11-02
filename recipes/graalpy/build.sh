@@ -60,6 +60,17 @@ mx build
 STANDALONE=`$MX_DIR/mx standalone-home python`
 cp -r $STANDALONE/* $PREFIX
 
+# sulong ensures that the llvm toolchain uses libc++abi.so in the toolchain
+# directory by dynamically making sure it's loaded in its toolchain wrappers,
+# but the conda build cannot know this and complains
+LIBCXX_RPATH=`patchelf --print-rpath $PREFIX/lib/llvm-toolchain/lib/*/libc++.so.1.0`
+if [ -n "$LIBCXX_RPATH" ]; then
+    LIBCXX_RPATH="$LIBCXX_RPATH:\$ORIGIN"
+else
+    LIBCXX_RPATH="\$ORIGIN"
+fi
+patchelf --set-rpath "$LIBCXX_RPATH" $PREFIX/lib/llvm-toolchain/lib/*/libc++.so.1.0
+
 # create the site-packages folder to match cpython
 mkdir -p $PREFIX/lib/python${PY_VERSION}/site-packages
 
