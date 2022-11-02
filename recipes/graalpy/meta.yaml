@@ -13,11 +13,14 @@ source:
   - url: https://github.com/graalvm/mx/archive/refs/tags/{{ mx_version }}.zip
     sha256: 6719145418c9846fb75686190359c69018ac5e61af113aba35e8542fdf09e09c
     folder: mx
+    patches:
+      - patches/mx-keep-rpath-origin-variable.patch
   - url: https://github.com/oracle/graal/archive/refs/tags/vm-ce-{{ version }}.zip
     sha256: 9b714747fbff0b9f477a102a22e6558f697322d8fa89b1ac9956938d3afb3b87
     folder: graal
     patches:
       - patches/sulong-disable-tests.patch
+      - patches/sulong-relative-rpath.patch
   - url: https://github.com/oracle/graalpython/archive/refs/tags/vm-ce-{{ version }}.zip
     sha256: 72ad9a6e8d8283425768c2838d9f360a42eb1dc6096d0efe44464f4fd5c0982c
     folder: graalpython
