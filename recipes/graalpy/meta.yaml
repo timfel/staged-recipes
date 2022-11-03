@@ -63,7 +63,7 @@ outputs:
         - patch
         - curl
       run_constrained:
-        - python {{ python_version }} *_{{ graalpy_abi }}_graalpy
+        - python {{ python_version }} {{ build_num }}_{{ graalpy_abi }}_graalpy
     test:
       commands:
         - python3 --help
