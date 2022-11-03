@@ -6,11 +6,10 @@
 # Keep increasing the build_num until we get a new graalpy version. Do not reset
 {% set build_num = "0" %}
 
-{% set python_maj_min = ".".join(gp_python_version.split(".")[:2]) %}
 {% set graalpy_abi = "".join(version.split(".")[:2]) %}
 
 package:
-  name: graalpy-meta
+  name: graalpy
   version: {{ version }}
 
 # download graalpython and the mx build tool
@@ -32,73 +31,30 @@ source:
     patches:
       - patches/graalpy-honour-sysroot.patch
 
-outputs:
-  - name: python
-    version: {{ gp_python_version }}
-    build:
-      number: {{ build_num }}
-      string: {{ build_num }}_{{ graalpy_abi }}_graalpy
-      track_features:
-        - graalpy
-      run_exports:
-        weak:
-          - graalpy >={{ version }}
-          - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
-        noarch:
-          - {{ pin_subpackage("python", max_pin="x.x", min_pin="x.x") }}
-    requirements:
-      host:
-        - graalpy {{ version }}
-      run:
-        - graalpy {{ version }}
-        - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
-    test:
-      commands:
-        - python --version
-        - test $(python -c "import sys; print('.'.join(str(i) for i in sys.version_info[:3]))") == "{{ gp_python_version }}"  # [unix]
-        - test $(python -c "import sys; print(sys.implementation.name)") == "graalpy"  # [unix]
+build:
+  number: {{ build_num }}
+  skip: true  # [win or osx]
 
-  - name: hpy
-    version: {{ hpy_version }}
-    build:
-      number: {{ build_num }}
-      string: {{ build_num }}_graalpy
-      noarch: generic
-    requirements:
-      run:
-        - graalpy {{ version }}
-        - python {{ gp_python_version }} {{ build_num }}_{{ graalpy_abi }}_graalpy
-        - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
-    test:
-      commands:
-        - test $(python -c "import hpy.universal; print(hpy.universal.get_version()[0])") == "{{ hpy_version }}"   # [unix]
-
-  - name: graalpy
-    version: {{ version }}
-    build:
-      number: {{ build_num }}
-      skip: true  # [win or osx]
-      script: build_graalpy.sh
-    requirements:
-      build:
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-        - python >=3.8
-        - make
-        - patch
-        - zlib
-        - git
-        - curl
-        - cmake
-        - patchelf
-      host:
-        - zlib
-      run:
-        - libzlib
-        - patch
-        - curl
-      run_constrained:
-        - python {{ gp_python_version }} *_{{ graalpy_abi }}_graalpy
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - python >=3.8
+    - make
+    - patch
+    - zlib
+    - git
+    - curl
+    - cmake
+    - patchelf
+  host:
+    - zlib
+  run:
+    - libzlib
+    - patch
+    - curl
+  run_constrained:
+    - python {{ gp_python_version }} *_{{ graalpy_abi }}_graalpy
 
 about:
     home: http://graalvm.org/python
