@@ -46,13 +46,13 @@ outputs:
     version: {{ hpy_version }}
     build:
       number: {{ build_num }}
-      string: {{ build_num }}_graalpy{{ python_maj_min.replace(".", "") }}
+      string: {{ build_num }}_graalpy
       noarch: generic
     requirements:
       run:
-        - graalpy{{ python_maj_min }} {{ version }}
+        - graalpy {{ version }}
         - python {{ python_version }} {{ build_num }}_{{ graalpy_abi }}_graalpy
-        - python_abi {{ python_maj_min }} *_graalpy{{ python_maj_min.replace(".", "") }}_gp{{ graalpy_abi }}
+        - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
     test:
       commands:
         - test $(python -c "import hpy.universal; print(hpy.universal.get_version()[0])") == "{{ hpy_version }}"   # [unix]
