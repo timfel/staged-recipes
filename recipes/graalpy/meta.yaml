@@ -49,8 +49,7 @@ requirements:
     - libzlib
     - patch
     - curl
-  run_constrained:
-    - python {{ name_suffix }}.* *_{{ "".join(version.split(".")[:2]) }}_graalpy
+    - python {{ name_suffix }}.* *_{{ graalpy_abi }}_graalpy
 
 about:
     home: http://graalvm.org/python
