@@ -1,6 +1,6 @@
-# the graalpy version implies the python_version and mx_version, so update these together
+# the graalpy version implies the gp_python_version and mx_version, so update these together
 {% set version = "22.3.0" %}
-{% set python_version = "3.8.5" %}
+{% set gp_python_version = "3.8.5" %}
 {% set mx_version = "6.9.7" %}
 
 # Keep increasing the build_num until we get a new graalpy version. Do not reset
@@ -53,7 +53,8 @@ requirements:
     - libzlib
     - patch
     - curl
-    - python {{ python_version }} *_{{ graalpy_abi }}_graalpy
+  run_constrained:
+    - python {{ gp_python_version }} *_{{ graalpy_abi }}_graalpy
 
 about:
     home: http://graalvm.org/python
