@@ -1,16 +1,2 @@
-python_version:
-  - 3.8.5
-
-# Following are dummy keys to fix rerendering
-python:
- - "2.7"
-python_impl:
- - '*'
-numpy:
- - '1.16'
-c_compiler:
- - "*"
-cxx_compiler:
- - "*"
-vc:
- - "*"
+name_suffix:
+  - 3.8
