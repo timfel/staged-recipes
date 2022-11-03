@@ -33,8 +33,14 @@ source:
     patches:
       - patches/graalpy-honour-sysroot.patch
 
+requirements:
+  run:
+    - graalpy_standalone {{ version }} {{ build_num }}_graalpy{{ graalpy_abi }}
+  run_constrained:
+    - python {{ python_version }} *_{{ graalpy_abi }}_graalpy
+
 outputs:
-  - name: graalpy
+  - name: graalpy_standalone
     version: {{ version }}
     build:
       number: {{ build_num }}
@@ -62,8 +68,6 @@ outputs:
         - libzlib
         - patch
         - curl
-      run_constrained:
-        - python {{ python_version }} *_{{ graalpy_abi }}_graalpy
     test:
       commands:
         - python3 --help

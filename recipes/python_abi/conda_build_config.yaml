@@ -46,15 +46,12 @@ python_impl:
 numpy:
  - '1.16'
 c_compiler:
- - gcc  # [linux]
- - clang  # [osx]
- - vs2019  # [win]
+ - "*"
 cxx_compiler:
- - gxx  # [linux]
- - clangxx  # [osx]
- - vs2019  # [win]
-vc:  # [win]
- - 14  # [win]
+ - "*"
+vc:
+ - "*"
+
 zip_keys:
  -
    - python_abi_tag
