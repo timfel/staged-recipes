@@ -42,7 +42,7 @@ git -C $SRC_DIR/graal commit --allow-empty -m "dummy commit"
 
 # set environment variables to build a graalpy distribution taken from the
 # released graal/mx/mx.vm/ce env file
-export MX_PYTHON=${BUILD_PREFIX}/bin/python
+export MX_PYTHON=${BUILD_PREFIX}/bin/pypy3
 export DYNAMIC_IMPORTS=/compiler,/regex,/sdk,/substratevm,/sulong,/tools,/truffle,graalpython
 export COMPONENTS=cmp,cov,dap,dis,gu,gvm,icu4j,ins,insight,insightheap,lg,llp,llrc,llrl,llrn,lsp,nfi-libffi,pbm,pmh,poly,polynative,pro,pyn,pynl,rgx,sdk,tfl,tflm
 export NATIVE_IMAGES=lib:pythonvm,lib:jvmcicompiler,graalvm-native-binutil,graalvm-native-clang,graalvm-native-clang-cl,graalvm-native-clang++,graalvm-native-ld

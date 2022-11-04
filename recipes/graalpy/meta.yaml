@@ -57,7 +57,7 @@ outputs:
       build:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        - python >=3.10
+        - pypy3.8
         - make
         - patch
         - zlib
