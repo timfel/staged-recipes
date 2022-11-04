@@ -30,6 +30,7 @@ source:
     folder: graalpython
     patches:
       - patches/graalpy-honour-sysroot.patch
+      - patches/graalpy-reduce-image-build-xmx.patch
 
 build:
   number: {{ build_num }}
