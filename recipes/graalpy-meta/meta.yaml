@@ -17,6 +17,12 @@ build:
   number: {{ build_num }}
   skip: true  # [win or osx]
 
+# these requirements are to help conda figure out which order to build this in in the staged-recipes repo
+requirements:
+  build:
+    - graalpy_{{ graalpy_distribution }} >={{ version }}
+    - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
+
 outputs:
   - name: python
     version: {{ gp_python_version }}
