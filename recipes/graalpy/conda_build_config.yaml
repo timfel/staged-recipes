@@ -1,0 +1,3 @@
+graalpy_distribution:
+  - standalone
+  # - graalvm
