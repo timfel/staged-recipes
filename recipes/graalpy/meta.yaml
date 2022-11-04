@@ -17,10 +17,6 @@ package:
   name: graalpy
   version: {{ version }}
 
-build:
-  number: {{ build_num }}
-  string: {{ build_num }}_graalpy{{ python_maj_min.replace(".", "") }}_{{ graalpy_distribution }}
-
 # download graalpython and the mx build tool
 source:
   - url: https://github.com/graalvm/mx/archive/refs/tags/{{ mx_version }}.zip

@@ -51,6 +51,7 @@ export DISABLE_INSTALLABLES=False
 # set correct jdk paths
 CONTINUOUS_INTEGRATION=true mx fetch-jdk --to $SRC_DIR --strip-contents-home --jdk-id labsjdk-ce-17
 export JAVA_HOME=`echo $SRC_DIR/labsjdk-ce-17*`
+export JAVA_OPTS="-Xmx4G"
 
 # run the build
 mx graalvm-show
