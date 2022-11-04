@@ -9,7 +9,7 @@
 {% set graalpy_abi = "".join(version.split(".")[:2]) %}
 
 package:
-  name: graalpy
+  name: graalpy_standalone
   version: {{ version }}
 
 # download graalpython and the mx build tool

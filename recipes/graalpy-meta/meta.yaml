@@ -3,7 +3,6 @@
 {% set gp_python_version = "3.8.5" %}
 {% set hpy_version = "0.0.4" %}
 
-
 # Keep increasing the build_num until we get a new graalpy version. Do not reset
 {% set build_num = "0" %}
 
@@ -28,21 +27,34 @@ outputs:
         - graalpy
       run_exports:
         weak:
-          - graalpy >={{ version }}
+          - graalpy_{{ graalpy_distribution }} >={{ version }}
           - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
         noarch:
           - {{ pin_subpackage("python", max_pin="x.x", min_pin="x.x") }}
     requirements:
       host:
-        - graalpy {{ version }}
+        - graalpy_{{ graalpy_distribution }} {{ version }}
       run:
-        - graalpy {{ version }}
+        - graalpy_{{ graalpy_distribution }} {{ version }}
         - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
     test:
       commands:
         - python --version
         - test $(python -c "import sys; print('.'.join(str(i) for i in sys.version_info[:3]))") == "{{ gp_python_version }}"  # [unix]
         - test $(python -c "import sys; print(sys.implementation.name)") == "graalpy"  # [unix]
+
+  - name: graalpy
+    version: {{ version }}
+    build:
+      number: {{ build_num }}
+      string: {{ build_num }}_graalpy{{ python_maj_min.replace(".", "") }}
+      noarch: generic
+    requirements:
+      run:
+        - python {{ gp_python_version }} {{ build_num }}_{{ graalpy_abi }}_graalpy
+    test:
+      commands:
+        - graalpy --version
 
   - name: hpy
     version: {{ hpy_version }}
@@ -52,7 +64,7 @@ outputs:
       noarch: generic
     requirements:
       run:
-        - graalpy {{ version }}
+        - graalpy_{{ graalpy_distribution }} {{ version }}
         - python {{ gp_python_version }} {{ build_num }}_{{ graalpy_abi }}_graalpy
         - python_abi {{ python_maj_min }} *_graalpy{{ graalpy_abi }}
     test:
