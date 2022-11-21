@@ -2,6 +2,7 @@
 {% set version = "22.3.0" %}
 {% set gp_python_version = "3.8.5" %}
 {% set mx_version = "6.9.7" %}
+{% set hpy_version = "0.0.4" %}
 {% set java_version = "17.0.5+8" %}
 {% set jvmci_version = "22.3-b08" %}
 
@@ -165,6 +166,25 @@ outputs:
       commands:
         - java --version
         - javac --version
+
+  - name: hpy
+    version: {{ hpy_version }}
+    build:
+      number: {{ build_num }}
+      string: {{ build_num }}_graalpy{{ graalpy_maj_min }}
+      track_features:
+        - graalpy
+      run_exports:
+        weak:
+          - hpy >={{ hpy_version }}
+    requirements:
+      host:
+        - {{ pin_subpackage("graalpy", max_pin="x.x", min_pin="x.x") }}
+      run:
+        - {{ pin_subpackage("graalpy", max_pin="x.x", min_pin="x.x") }}
+    test:
+      commands:
+        - python -c "import hpy.universal; print(hpy.universal.get_version())"
 
 about:
     home: http://graalvm.org/python
