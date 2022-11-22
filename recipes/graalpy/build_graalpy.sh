@@ -11,7 +11,7 @@ PY_VERSION=3.8
 
 # set up paths for mx build
 export MX_DIR=$SRC_DIR/mx
-export PATH=$PATH:$MX_DIR
+export PATH=$MX_DIR:$PATH
 export MX_PRIMARY_SUITE_PATH=$SRC_DIR/graal/vm
 
 # mx ninja build templates hardcode ar, gcc, g++; symlink these to the conda
