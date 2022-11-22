@@ -1,0 +1,60 @@
+{% set name = "hpy" %}
+{% set version = "0.0.4" %}
+{% set build_num = "0" %}
+
+{% if python_version is not defined %}
+{% set python_version = "3.10" %}
+{% endif %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/hpy-{{ version }}.tar.gz
+  sha256: 50af2b9e60930aa7e57645fe6f3d9bc46d0c7ae8e0854b5b3124afb312694d98
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv
+  number: {{ build_num }}
+  skip: true  # [py<38]
+  run_exports:
+    - hpy >={{ version }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python {{ python_version }}.* *_cpython
+    - setuptools-scm
+    - pip
+  run:
+    - python {{ python_version }}.* *_cpython
+
+test:
+  imports:
+    - hpy.debug
+    - hpy.devel
+    - hpy.universal
+  source_files:
+    - test
+  commands:
+    - pip check
+    - pytest test
+  requires:
+    - pip
+    - pytest
+
+about:
+  home: https://hpyproject.org
+  summary: A better C API for Python
+  license: MIT
+  license_file:
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - timfel
+    - mattip
+    - antocuni
+    - fangerer
